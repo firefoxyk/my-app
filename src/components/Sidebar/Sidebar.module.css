@@ -1,0 +1,17 @@
+.sidebar {
+    grid-area: sidebar;
+    background-color: green;
+  }
+
+.item {
+    color: white;
+    margin-bottom: 10px;
+    text-decoration: none;
+
+}
+
+.item a.active {
+    font-weight: bolder;
+    color: gold;
+    text-decoration: none;
+}
