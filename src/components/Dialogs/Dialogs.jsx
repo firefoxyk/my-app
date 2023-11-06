@@ -2,14 +2,24 @@ import React from 'react';
 import classes from './Dialogs.module.css';
 import DialogItem from './DialogItem/DialogItem'
 import MessageItem from './MessageItem/MessageItem'
+import { sendMessageCreator, updateNewMessageBodyCreator } from '../../redux/state';
 
 
 
 const Dialogs = (props) => {
+    let state = props.store.getState().messagesPage;
 
-    let dialogsElements = props.state.dialogs.map(dialog => <DialogItem name={dialog.name} id={dialog.id} />);
+    let dialogsElements = state.dialogs.map(dialog => <DialogItem name={dialog.name} id={dialog.id} />);
+    let messagesElements = state.message.map(mess => <MessageItem text={mess.message} />);
+    let newMessageBody = state.newMessageBody;
 
-    let messagesElements = props.state.message.map(mess => <MessageItem text={mess.message} />);
+    let onSendMessageClick = ()=> {
+        props.store.dispatch(sendMessageCreator());
+    }
+    let onNewNessageChange = (event) =>{
+      let body = event.target.value;
+      props.store.dispatch(updateNewMessageBodyCreator(body));
+    }
 
 
     return <div className={classes.content}>
@@ -20,7 +30,19 @@ const Dialogs = (props) => {
                     {dialogsElements}
                 </div>
                 <div className={classes.messages}>
-                    {messagesElements}
+                    <div>
+                        {messagesElements}
+                    </div>
+                    <div>
+                        <textarea value = {newMessageBody} 
+                            onChange={onNewNessageChange} 
+                            placeholder='Enter your message'>
+
+                        </textarea>
+                    </div>
+                    <div>
+                        <button onClick={onSendMessageClick}>Send</button>
+                    </div>
                 </div>
             </div>
         </div>
