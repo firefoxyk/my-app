@@ -1,3 +1,6 @@
+import messagesReducer from "./messagesPage-reducer.js";
+import contentReducer from "./contentPage-reducer.js";
+
 const ADD_POST = 'ADD-POST';
 const UPDATE_NEW_MESSAGE_BODY = 'UPDATE-NEW-MESSAGE-BODY';
 const SEND_MESSAGE = 'SEND-MESSAGE';
@@ -27,15 +30,6 @@ export let store = {
     _callSubscriber() {
         console.log('state was change');
     },
-    _addPost(postMessage) {
-        let newPost = {
-            id: 5,
-            message: postMessage,
-            likesCount: 0
-        };
-        this._state.contentPage.posts.push(newPost);
-        this._callSubscriber(this._state);
-    },
     getState() {
         return this._state;
     },
@@ -43,19 +37,9 @@ export let store = {
         this._callSubscriber = observer;
     },
     dispatch(action) {
-        if (action.type === ADD_POST) {
-            this._addPost(action.postMessage);
-        }
-        else if (action.type === UPDATE_NEW_MESSAGE_BODY){
-            this._state.messagesPage.newMessageBody = action.body;
-            this._callSubscriber(this._state);//для отриcовки при изменении state
-        }
-        else if (action.type ===SEND_MESSAGE){
-            let body = this._state.messagesPage.newMessageBody;
-            this._state.messagesPage.newMessageBody = '';
-            this._state.messagesPage.message.push({id: 6, message: body});
-            this._callSubscriber(this._state);//для отриcовки при изменении state
-        }
+        this._state.contentPage = contentReducer(this._state.contentPage,action);
+        this._state.messagesPage = messagesReducer(this._state.messagesPage,action);
+        this._callSubscriber(this._state);//для отриcовки при изменении state
     }
 }
 export const addPostActionCreator = (text) => ({ type: ADD_POST, postMessage: text })
